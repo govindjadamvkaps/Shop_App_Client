@@ -12,24 +12,31 @@ import Checkout from './components/Checkout';
 import Thankyou from './components/Thankyou';
 import ShopSingle from './components/ShopSingle';
 import FetchData from './components/FetchData';
+import Login from './components/Login';
+import Registration from './components/Registration';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
-   <BrowserRouter>
-    <Header/>
-    <Routes>
-      <Route path='/' element={<Home/>}></Route>
-      <Route path='/about' element={<About/>}></Route>
-      <Route path='/shop' element={<FetchData/>}></Route>
-      <Route path='contact' element={<Contact/>}></Route>
-      <Route path="/cart" element={<Cart/>}></Route>
-      <Route path='/cart/checkout' element={<Checkout/>}></Route>
-      <Route path='/thankyou' element={<Thankyou/>}></Route>
-      <Route path='/shop-single/:id' element={<ShopSingle/>}></Route>
-      <Route path='/cart/:id' element={<Cart/>}></Route>
-    </Routes>
-    <Footer/>
-   </BrowserRouter>
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path='/login' element={<Login />}></Route>
+        <Route path='/sign-up' element={<Registration />}></Route>
+        <Route path='/' element={<Home />}></Route>
+        <Route path='/about' element={<About />}></Route>
+        <Route path='/shop' element={<FetchData />}></Route>
+        <Route path='contact' element={<Contact />}></Route>
+        <Route path="/cart" element={<Cart />}></Route>
+        <Route path='/cart/checkout' element={<Checkout />}></Route>
+        <Route path='/thankyou' element={<Thankyou />}></Route>
+        <Route path='/shop-single/:id' element={<ShopSingle />}></Route>
+        <Route path='/cart/:id' element={<Cart />}></Route>
+      </Routes>
+      <Footer />
+      <ToastContainer/>
+    </BrowserRouter>
   );
 }
 

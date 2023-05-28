@@ -10,11 +10,14 @@ const {id} = useParams()
     try {
       const resp = await axios.get(`http://localhost:5000/products/${id}`)
       console.log("cart Data ==>", resp.data)
+      setCartData(resp.data)
     } catch (error) {
       
     }
   }
-
+  const decrement =(id)=>{
+   
+  }
   useEffect(()=>{
     fetchCart()
   },[])
@@ -66,6 +69,9 @@ const {id} = useParams()
                         <button
                           className="btn btn-outline-primary js-btn-minus"
                           type="button"
+                          onClick={()=>{
+                            decrement(cartData._id)
+                          }}
                         >
                           −
                         </button>

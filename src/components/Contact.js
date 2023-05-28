@@ -1,7 +1,35 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { StatusCodes } from "http-status-codes";
 
 const Contact = () => {
+
+const { handleSubmit, register ,formState:{errors}, reset  }  =useForm()
+
+const postData = async(data)=>{
+  // console.log("form data",data)
+  try {
+    const  resp = await axios.post(`http://localhost:5000/post-message`,data)
+    console.log(resp.data.data)
+
+    if(resp.status===StatusCodes.CREATED)
+    {
+      toast.success("message send",{
+        position:"top-center"
+      })
+      reset()
+    }
+  } catch (error) {
+    toast.error("error in send message ",{
+      position:"top-center"
+    })
+  }
+}
+
   return (
     <>
       <div className="bg-light py-3">
@@ -21,7 +49,7 @@ const Contact = () => {
               <h2 className="h3 mb-3 text-black">Get In Touch</h2>
             </div>
             <div className="col-md-7">
-              <form action="#" method="post">
+              <form onSubmit={handleSubmit(postData)}>
                 <div className="p-3 p-lg-5 border">
                   <div className="form-group row">
                     <div className="col-md-6">
@@ -31,9 +59,9 @@ const Contact = () => {
                       <input
                         type="text"
                         className="form-control"
-                        id="c_fname"
-                        name="c_fname"
+                       {...register('fname',{required:true})}
                       />
+                      {errors.fname && <p style={{color:"red"}}>First name is required</p>}
                     </div>
                     <div className="col-md-6">
                       <label htmlFor="c_lname" className="text-black">
@@ -42,9 +70,9 @@ const Contact = () => {
                       <input
                         type="text"
                         className="form-control"
-                        id="c_lname"
-                        name="c_lname"
+                        {...register('lname',{required:true})}
                       />
+                      {errors.lname && <p style={{color:"red"}}>Last name is required</p>}
                     </div>
                   </div>
                   <div className="form-group row">
@@ -55,10 +83,9 @@ const Contact = () => {
                       <input
                         type="email"
                         className="form-control"
-                        id="c_email"
-                        name="c_email"
-                        placeholder=""
+                        {...register('email',{required:true})}
                       />
+                      {errors.email && <p style={{color:"red"}}>email is required</p>}
                     </div>
                   </div>
                   <div className="form-group row">
@@ -69,9 +96,9 @@ const Contact = () => {
                       <input
                         type="text"
                         className="form-control"
-                        id="c_subject"
-                        name="c_subject"
+                       {...register('subject',{required:true})}
                       />
+                      {errors.subject && <p style={{color:"red"}}>subject is required</p>}
                     </div>
                   </div>
                   <div className="form-group row">
@@ -80,13 +107,13 @@ const Contact = () => {
                         Message{" "}
                       </label>
                       <textarea
-                        name="c_message"
-                        id="c_message"
+                       {...register('message',{required:true})}
                         cols={30}
                         rows={7}
                         className="form-control"
                         defaultValue={""}
                       />
+                      {errors.message && <p style={{color:"red"}}>message is required</p>}
                     </div>
                   </div>
                   <div className="form-group row">
@@ -130,6 +157,7 @@ const Contact = () => {
           </div>
         </div>
       </div>
+      <ToastContainer/>
     </>
   );
 };

@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import NavBar from "./NavBar";
 
 const Header = () => {
+
+  // const [tokenn, setTokenn] = useState(null);
+
+  // const storedToken = localStorage.getItem("token");
+  // if (storedToken && !tokenn) {
+  //   // set the token from local storage
+  //   setTokenn(storedToken);
+  // }
+
   return (
     <>
       <header className="site-navbar" role="banner">
@@ -28,7 +37,10 @@ const Header = () => {
               </div>
               <div className="col-6 col-md-4 order-3 order-md-3 text-right">
                 <div className="site-top-icons">
-                  <ul>
+                {
+                  localStorage.getItem("token")?
+                  
+                (  <ul>
                     <li>
                       <NavLink to="#">
                         <span className="icon icon-person" />
@@ -39,11 +51,15 @@ const Header = () => {
                         <span className="icon icon-heart-o" />
                       </NavLink>
                     </li>
-                    <li>
+                    <li>{
+                      localStorage.getItem("token")?
+                    
                       <NavLink to="/cart" className="site-cart">
                         <span className="icon icon-shopping_cart" />
                         <span className="count">2</span>
                       </NavLink>
+                      : alert("please login first")
+                    }
                     </li>
                     <li className="d-inline-block d-md-none ml-md-0">
                       <NavLink to="#" className="site-menu-toggle js-menu-toggle">
@@ -51,6 +67,9 @@ const Header = () => {
                       </NavLink>
                     </li>
                   </ul>
+                  )
+                  : null
+                }
                 </div>
               </div>
             </div>

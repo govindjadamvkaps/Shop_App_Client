@@ -52,6 +52,8 @@ const Shop = ({productData}) => {
 
   // console.log("product data", productData)
 
+// incresase the item
+
 
 
   return (
