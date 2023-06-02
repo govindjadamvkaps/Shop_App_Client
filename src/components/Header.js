@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import NavBar from "./NavBar";
 
@@ -11,6 +12,40 @@ const Header = () => {
   //   // set the token from local storage
   //   setTokenn(storedToken);
   // }
+  
+  const [cartData, setCartData]=useState([])
+  const user_id = localStorage.getItem("_id")
+
+  const fetchCart = async()=>{
+    try {
+      const resp  = await axios.get(`http://localhost:5000/get-cart/${user_id}`)
+      // console.log("header response",resp.data.data)
+      setCartData(resp.data.data)
+
+    } catch (error) {
+      console.log("errror in fetching cart by user id", error)
+    }
+  }
+
+  useEffect(()=>{
+    fetchCart()
+  },[cartData])
+
+
+    const totalCart = ()=>{
+      if (cartData.length === 0) {
+        return 0;
+      }
+  
+      return cartData.reduce((num1, num2) => {
+            
+        // const total = num1+num2.totalPrice
+        // console.log("total",total)
+        return num1 + num2.quantity;
+      },0);
+      
+    }
+    // console.log("fjlfakfd",totalCart())
 
   return (
     <>
@@ -38,8 +73,8 @@ const Header = () => {
               <div className="col-6 col-md-4 order-3 order-md-3 text-right">
                 <div className="site-top-icons">
                 {
-                  localStorage.getItem("token")?
-                  
+                  // localStorage.getItem("token")?
+                  ! localStorage.getItem("token")? null:
                 (  <ul>
                     <li>
                       <NavLink to="#">
@@ -51,15 +86,13 @@ const Header = () => {
                         <span className="icon icon-heart-o" />
                       </NavLink>
                     </li>
-                    <li>{
-                      localStorage.getItem("token")?
+                    <li>
                     
                       <NavLink to="/cart" className="site-cart">
                         <span className="icon icon-shopping_cart" />
-                        <span className="count">2</span>
+                        <span className="count">{totalCart()}</span>
                       </NavLink>
-                      : alert("please login first")
-                    }
+                      
                     </li>
                     <li className="d-inline-block d-md-none ml-md-0">
                       <NavLink to="#" className="site-menu-toggle js-menu-toggle">
@@ -68,7 +101,7 @@ const Header = () => {
                     </li>
                   </ul>
                   )
-                  : null
+                  
                 }
                 </div>
               </div>

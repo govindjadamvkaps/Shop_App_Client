@@ -1,15 +1,22 @@
 import axios from 'axios'
+import { StatusCodes } from 'http-status-codes'
 import React, { useEffect, useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
+import { toast ,ToastContainer} from 'react-toastify'
+
+
 const ShopSingle = () => {
   const {id} = useParams()
+  const userId = localStorage.getItem("_id")
+  const history= useNavigate()
+  const [quantity, setQuantity] = useState(1)
   const [singleData, setSingleData] = useState([])
 
   const fetchSingleProduct = async()=>{
     try {
-      const resp = await axios.get(`http://localhost:5000/products/${id}`)
-      console.log("single Product", resp.data)
+      const resp = await axios.get(`http://localhost:5000/products/single/${id}`)
+      // console.log("single Product", resp.data)
       setSingleData(resp.data)
       
     } catch (error) {
@@ -18,9 +25,50 @@ const ShopSingle = () => {
     
     
   }
+
   useEffect(()=>{
     fetchSingleProduct()
   },[])
+
+  const handleClick = async() =>{
+    try {
+      const value = singleData.pPrice *quantity
+      console.log(value)
+      console.log(quantity)
+      const resp = await axios.post(`http://localhost:5000/insert-cart`,{
+        productId: id,
+        userId :userId,
+        totalPrice:value,
+        quantity:quantity
+      })
+      console.log(resp)
+
+      if(resp.status===StatusCodes.CREATED)
+      {
+        toast.success("product is added",{
+          position:"top-center"
+        })
+        history("/cart")
+      }
+    } catch (error) {
+      console.log("error in send cart data ", error)
+      toast.error("error")
+    }
+  }
+  const decrementValue =async() =>{
+    try {
+      if(quantity==1)
+      {
+        setQuantity(1)
+      }
+      else{
+        setQuantity(quantity-1)
+      }
+    } catch (error) {
+      setQuantity(quantity-1)
+    }
+  }
+
 
   return (
     <>
@@ -35,6 +83,7 @@ const ShopSingle = () => {
       </div>
     </div>
   </div>
+
   <div className="site-section">
     <div className="container">
       <div className="row">
@@ -94,6 +143,7 @@ const ShopSingle = () => {
                 <button
                   className="btn btn-outline-primary js-btn-minus"
                   type="button"
+                  onClick={decrementValue}
                 >
                   −
                 </button>
@@ -101,7 +151,7 @@ const ShopSingle = () => {
               <input
                 type="text"
                 className="form-control text-center"
-                defaultValue={1}
+                value={quantity}
                 placeholder=""
                 aria-label="Example text with button addon"
                 aria-describedby="button-addon1"
@@ -110,14 +160,16 @@ const ShopSingle = () => {
                 <button
                   className="btn btn-outline-primary js-btn-plus"
                   type="button"
+                  onClick={()=>setQuantity(quantity+1)}
                 >
                   +
                 </button>
               </div>
             </div>
-          </div>
+          </div>  
+          {/* to={`/cart/${singleData._id}`} */}
           <p>
-            <NavLink to={`/cart/${singleData._id}`} className="buy-now btn btn-sm btn-primary">
+            <NavLink  className="buy-now btn btn-sm btn-primary" onClick={handleClick}>
               Add To Cart
             </NavLink>
           </p>
@@ -125,6 +177,7 @@ const ShopSingle = () => {
       </div>
     </div>
   </div>
+
   <div className="site-section block-3 site-blocks-2 bg-light">
     <div className="container">
       <div className="row justify-content-center">
@@ -231,7 +284,7 @@ const ShopSingle = () => {
     </div>
   </div>
 
-
+          <ToastContainer/>
     </>
   )
 }

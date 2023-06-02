@@ -16,9 +16,9 @@ const NavBar = () => {
 
   const handleClick = () => {
     const token = localStorage.removeItem("token")
+    history("/login")
     localStorage.removeItem('_id')
     setTokenn(token)
-    history("/login")
 
 
     // history("/login")
@@ -28,6 +28,7 @@ const NavBar = () => {
     <>
       <nav className="site-navigation text-right text-md-center" role="navigation">
         <div className="container">
+          
           {tokenn ?(
             <ul className="site-menu js-clone-nav d-none d-md-block">
               <li className="has-children active">
@@ -85,7 +86,7 @@ const NavBar = () => {
                 <NavLink to="/contact">Contact</NavLink>
               </li>
               <li>
-                <NavLink onClick={handleClick}>Logout</NavLink>
+                <NavLink to='/login' onClick={handleClick}>Logout</NavLink>
               </li>
             </ul>
            ) :(

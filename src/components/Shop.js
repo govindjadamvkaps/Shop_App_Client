@@ -7,24 +7,24 @@ import { reducer } from './Reducer'
 export const CartContext = createContext()
 
 
-const Shop = ({productData}) => {
+const Shop = () => {
 
-  // const [productData, setProductData] = useState([])
-  // const fetchProduct = async () => {
-  //   try {
-  //     const resp = await axios.get(`http://localhost:5000/products`)
-  //     // console.log(resp.data.data)
-  //     setProductData(resp.data.data)
+  const [productData, setProductData] = useState([])
+  const fetchProduct = async () => {
+    try {
+      const resp = await axios.get(`http://localhost:5000/products`)
+      // console.log(resp.data.data)
+      setProductData(resp.data.data)
 
 
-  //   } catch (error) {
-  //     console.log("error in fetching products", error)
-  //   }
-  // }
+    } catch (error) {
+      console.log("error in fetching products", error)
+    }
+  }
 
-  // useEffect(() => {
-  //   fetchProduct()
-  // }, [])
+  useEffect(() => {
+    fetchProduct()
+  }, [])
 
 
   // if (productData != "") {
@@ -41,14 +41,14 @@ const Shop = ({productData}) => {
 
   // }
 
-  var initialState = {
-        productData: productData,
-        totalAmount: 0,
-        totalItems: 0
-  }
+  // var initialState = {
+  //       productData: productData,
+  //       totalAmount: 0,
+  //       totalItems: 0
+  // }
 
-  const [state, dispatch] = useReducer(reducer, initialState)
-  console.log("state=>", state)
+  // const [state, dispatch] = useReducer(reducer, initialState)
+  // console.log("state=>", state)
 
   // console.log("product data", productData)
 
@@ -58,7 +58,7 @@ const Shop = ({productData}) => {
 
   return (
     <>
-      <CartContext.Provider value={{...state}}>
+      <CartContext.Provider value={{productData}}>
         <ContextCart />
       </CartContext.Provider>
 

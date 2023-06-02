@@ -1,13 +1,83 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import Category from './Category'
 import Items from './Items'
 import { CartContext } from './Shop'
 import FetchData from './FetchData'
+import axios from 'axios'
 
 const ContextCart = () => {
-    
-    const {productData} = useContext(CartContext)
+
+    const { productData } = useContext(CartContext)
+    const [category, setCategory] = useState('')
+    const [categoryData, setCategoryData] = useState([])
+    const [productCategoryData, setProductCategoryData] = useState([])
+    const [men, setMen] = useState([])
+    const [women, setWomen] = useState([])
+    const [children, setChildren] = useState([])
+
+    // fetch All cetegories
+    const fetchCategory = async () => {
+        try {
+            const resp = await axios.get(`http://localhost:5000/categorys`)
+            // console.log("category is",resp.data)
+            setCategoryData(resp.data)
+        } catch (error) {
+            console.log("error in fetching category", error)
+        }
+    }
+
+    // fetch product of category men
+    const fetchMen = async () => {
+        try {
+            const resp = await axios.get(`http://localhost:5000/products/category/men`)
+            setMen(resp.data)
+        } catch (error) {
+            console.log('error in fetchig product of men', error)
+        }
+    }
+
+    // fetch product of category women
+    const fetChWomen = async () => {
+        try {
+            const resp = await axios.get(`http://localhost:5000/products/category/women`)
+            setWomen(resp.data)
+        } catch (error) {
+            console.log('error in fetchig product of women', error)
+        }
+    }
+
+    // fetch product of category Children
+    const fetchChildren = async () => {
+        try {
+            const resp = await axios.get(`http://localhost:5000/products/category/children`)
+            setChildren(resp.data)
+        } catch (error) {
+            console.log('error in fetchig product of children', error)
+        }
+    }
+
+    useEffect(() => {
+        fetchCategory()
+        fetchMen()
+        fetChWomen()
+        fetchChildren()
+    }, [])
+
+    const fetchProduct = async (category) => {
+        try {
+            const resp = await axios.get(`http://localhost:5000/products/${category}`)
+            // console.log("product by category", resp.data.data)
+            setProductCategoryData(resp.data.data)
+        } catch (error) {
+            console.log("error in fetching product by categorys", error)
+        }
+    }
+
+
+    useEffect(() => {
+        fetchProduct(category)
+    }, [category])
 
     // console.log("productData", productData)
 
@@ -34,33 +104,28 @@ const ContextCart = () => {
                                     <div className="float-md-left mb-4">
                                         <h2 className="text-black h5">Shop All</h2>
                                     </div>
-                                    <div className="d-flex">
-                                        <div className="dropdown mr-1 ml-md-auto">
-                                            <button
-                                                type="button"
-                                                className="btn btn-secondary btn-sm dropdown-toggle"
-                                                id="dropdownMenuOffset"
-                                                data-toggle="dropdown"
-                                                aria-haspopup="true"
-                                                aria-expanded="false"
+                                    <div className="d-flex">                                             <div class="form-floating">
+                                            <select
+                                                class="form-select"
+                                                id="floatingSelect"
+                                                aria-label="Floating label select example"
+                                                name='cat'
+                                                onChange={(e) => setCategory(e.target.value)}
                                             >
-                                                Latest
-                                            </button>
-                                            <div
-                                                className="dropdown-menu"
-                                                aria-labelledby="dropdownMenuOffset"
-                                            >
-                                                <a className="dropdown-item" href="#">
-                                                    Men
-                                                </a>
-                                                <a className="dropdown-item" href="#">
-                                                    Women
-                                                </a>
-                                                <a className="dropdown-item" href="#">
-                                                    Children
-                                                </a>
-                                            </div>
+                                                <option value="" selected="">Latest</option>
+                                                {
+                                                    categoryData.map((item, index) => {
+                                                        return (<>
+
+                                                            <option value={item.category} key={index}>{item.category}</option>
+                                                        </>)
+                                                    })
+
+                                                }
+                                            </select>
+
                                         </div>
+
                                         <div className="btn-group">
                                             <button
                                                 type="button"
@@ -97,11 +162,10 @@ const ContextCart = () => {
                             </div>
                             <div className="row mb-5">
                                 {
-                                    productData.map((item, index) => {
+                                    productCategoryData.map((item, index) => {
                                         return (
                                             <>
                                                 <Items key={index} {...item} />
-
                                             </>
                                         )
                                     })
@@ -109,7 +173,7 @@ const ContextCart = () => {
                                 }
 
                             </div>
-                            <div className="row" data-aos="fade-up">
+                            {/* <div className="row" data-aos="fade-up">
                                 <div className="col-md-12 text-center">
                                     <div className="site-block-27">
                                         <ul>
@@ -137,7 +201,7 @@ const ContextCart = () => {
                                         </ul>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
 
 
@@ -146,27 +210,34 @@ const ContextCart = () => {
                                 <h3 className="mb-3 h6 text-uppercase text-black d-block">
                                     Categories
                                 </h3>
+
                                 <ul className="list-unstyled mb-0">
+
                                     <li className="mb-1">
-                                        <a href="#" className="d-flex">
+                                        <NavLink to=""  value="men" onClick={(e)=>setCategory('men')} className="d-flex">
                                             <span>Men</span>{" "}
-                                            <span className="text-black ml-auto">(2,220)</span>
-                                        </a>
+                                            <span className="text-black ml-auto">({men.length})</span>
+                                        </NavLink>
                                     </li>
+
                                     <li className="mb-1">
-                                        <a href="#" className="d-flex">
+                                        <NavLink to="" value="women" onClick={(e)=>setCategory('women')} className="d-flex">
                                             <span>Women</span>{" "}
-                                            <span className="text-black ml-auto">(2,550)</span>
-                                        </a>
+                                            <span className="text-black ml-auto">({women.length})</span>
+                                        </NavLink>
                                     </li>
+
                                     <li className="mb-1">
-                                        <a href="#" className="d-flex">
+                                        <NavLink to="" value="children" onClick={(e)=>setCategory('children')} className="d-flex">
                                             <span>Children</span>{" "}
-                                            <span className="text-black ml-auto">(2,124)</span>
-                                        </a>
+                                            <span className="text-black ml-auto">({children.length})</span>
+                                        </NavLink>
                                     </li>
+
                                 </ul>
+
                             </div>
+
                             <div className="border p-4 rounded mb-4">
                                 <div className="mb-4">
                                     <h3 className="mb-3 h6 text-uppercase text-black d-block">
